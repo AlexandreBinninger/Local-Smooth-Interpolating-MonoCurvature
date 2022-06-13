@@ -1,0 +1,29 @@
+require "rake"
+require "fileutils"
+
+require_relative "../../Rakefile_common.rb"
+
+desc "install MINIZ"
+task :install do
+  puts "Copy miniz source".yellow
+  if not Dir.exist?("miniz-master") then
+    extract_zip("miniz-master.zip");
+  end
+  FileUtils.rm_f    '../../src/Utils/miniz'
+  FileUtils.mkdir_p '../../src/Utils/miniz'
+
+  files = Dir.glob("miniz-master/*.h")+Dir.glob("miniz-master/*.c");
+  # copy file
+  files.each do |fname|
+    FileUtils.cp fname, '../../src/Utils/miniz/'+fname[13..-1]
+  end
+  FileUtils.cp 'miniz_export.h', '../../src/Utils/miniz/miniz_export.h'
+end
+
+task :install_osx   => :install
+task :install_linux => :install
+task :install_win   => :install
+task :clean
+task :clean_osx
+task :clean_linux
+task :clean_win

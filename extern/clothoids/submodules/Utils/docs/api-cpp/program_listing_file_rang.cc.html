@@ -1,0 +1,485 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File rang.cc &#8212; Utils v1.2
+</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/cloud.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/table_styling.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+    <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C">toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File rang.cc</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-rang-cc">
+<span id="program-listing-file-rang-cc"></span><h1>Program Listing for File rang.cc<a class="headerlink" href="#program-listing-for-file-rang-cc" title="Permalink to this headline">¶</a>
+</h1>
+<p>↰ <a class="reference internal" href="file_rang.cc.html#file-rang-cc"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">rang.cc</span></code>)</p>
+<div class="highlight-cpp notranslate">
+<div class="highlight"><pre><span></span><span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Utils.hh"</span><span class="cp"></span>
+
+<span class="cp">#if defined(UTILS_OS_LINUX) || defined(UTILS_OS_OSX)</span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
+<span class="cp">#elif defined(UTILS_OS_WINDOWS)</span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;windows.h&gt;</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;io.h&gt;</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;memory&gt;</span><span class="cp"></span>
+
+<span class="w">  </span><span class="c1">// Only defined in windows 10 onwards, redefining in lower windows since it</span>
+<span class="w">  </span><span class="c1">// doesn't gets used in lower versions</span>
+<span class="w">  </span><span class="c1">// https://docs.microsoft.com/en-us/windows/console/getconsolemode</span>
+<span class="w">  </span><span class="cp">#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING</span>
+<span class="w">  </span><span class="cp">#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004</span>
+<span class="w">  </span><span class="cp">#endif</span>
+<span class="cp">#endif</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rang</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">wstring</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">getenv</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">any_of</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">begin</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">end</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">strstr</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nothrow</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">clog</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">streambuf</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#endif</span>
+
+<span class="w">  </span><span class="k">namespace</span><span class="w"> </span><span class="nn">rang_implementation</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">    </span><span class="nf">supportsColor</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#if defined(UTILS_OS_LINUX) || defined(UTILS_OS_OSX)</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Terms</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="s">"ansi"</span><span class="p">,</span><span class="w">    </span><span class="s">"color"</span><span class="p">,</span><span class="w">  </span><span class="s">"console"</span><span class="p">,</span><span class="w"> </span><span class="s">"cygwin"</span><span class="p">,</span><span class="w"> </span><span class="s">"gnome"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="s">"konsole"</span><span class="p">,</span><span class="w"> </span><span class="s">"kterm"</span><span class="p">,</span><span class="w">  </span><span class="s">"linux"</span><span class="p">,</span><span class="w">   </span><span class="s">"msys"</span><span class="p">,</span><span class="w">   </span><span class="s">"putty"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="s">"rxvt"</span><span class="p">,</span><span class="w">    </span><span class="s">"screen"</span><span class="p">,</span><span class="w"> </span><span class="s">"vt100"</span><span class="p">,</span><span class="w">   </span><span class="s">"xterm"</span><span class="w"></span>
+<span class="w">        </span><span class="p">};</span><span class="w"></span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">env_p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getenv</span><span class="p">(</span><span class="s">"TERM"</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">env_p</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">nullptr</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">any_of</span><span class="p">(</span><span class="w"></span>
+<span class="w">          </span><span class="n">begin</span><span class="p">(</span><span class="n">Terms</span><span class="p">),</span><span class="w"> </span><span class="n">end</span><span class="p">(</span><span class="n">Terms</span><span class="p">),</span><span class="w"></span>
+<span class="w">          </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">term</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">strstr</span><span class="p">(</span><span class="n">env_p</span><span class="p">,</span><span class="w"> </span><span class="n">term</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}();</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#elif defined(UTILS_OS_WINDOWS)</span>
+<span class="w">      </span><span class="c1">// All windows versions support colors through native console methods</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#else</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#endif</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="cp">#ifdef UTILS_OS_WINDOWS</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">    </span><span class="nf">isMsysPty</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="c1">// disable for mingw on MATLAB</span>
+<span class="w">      </span><span class="cp">#if (defined(MINGW) || defined(__MINGW32__)) &amp;&amp; defined(MATLAB_MEX_FILE )</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#else</span>
+<span class="w">      </span><span class="c1">// Dynamic load for binary compability with old Windows</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ptrGetFileInformationByHandleEx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="o">&amp;</span><span class="n">GetFileInformationByHandleEx</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">GetProcAddress</span><span class="p">(</span><span class="w"></span>
+<span class="w">          </span><span class="n">GetModuleHandle</span><span class="p">(</span><span class="n">TEXT</span><span class="p">(</span><span class="s">"kernel32.dll"</span><span class="p">)),</span><span class="w"></span>
+<span class="w">          </span><span class="s">"GetFileInformationByHandleEx"</span><span class="w"></span>
+<span class="w">        </span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">ptrGetFileInformationByHandleEx</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">HANDLE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_get_osfhandle</span><span class="p">(</span><span class="n">fd</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_HANDLE_VALUE</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// Check that it's a pipe:</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">GetFileType</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">FILE_TYPE_PIPE</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// POD type is binary compatible with FILE_NAME_INFO from WinBase.h</span>
+<span class="w">      </span><span class="c1">// It have the same alignment and used to avoid UB in caller code</span>
+<span class="w">      </span><span class="k">struct</span> <span class="nc">MY_FILE_NAME_INFO</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">DWORD</span><span class="w"> </span><span class="n">FileNameLength</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">WCHAR</span><span class="w"> </span><span class="n">FileName</span><span class="p">[</span><span class="n">MAX_PATH</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">pNameInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">MY_FILE_NAME_INFO</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="p">(</span><span class="n">nothrow</span><span class="p">)</span><span class="w"> </span><span class="n">MY_FILE_NAME_INFO</span><span class="p">()</span><span class="w"></span>
+<span class="w">      </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">pNameInfo</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// Check pipe name is template of</span>
+<span class="w">      </span><span class="c1">// {"cygwin-","msys-"}XXXXXXXXXXXXXXX-ptyX-XX</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">ptrGetFileInformationByHandleEx</span><span class="p">(</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">FileNameInfo</span><span class="p">,</span><span class="w"> </span><span class="n">pNameInfo</span><span class="p">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">MY_FILE_NAME_INFO</span><span class="p">))</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">wstring</span><span class="w"> </span><span class="n">name</span><span class="p">(</span><span class="n">pNameInfo</span><span class="o">-&gt;</span><span class="n">FileName</span><span class="p">,</span><span class="w"> </span><span class="n">pNameInfo</span><span class="o">-&gt;</span><span class="n">FileNameLength</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">WCHAR</span><span class="p">));</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="sa">L</span><span class="s">"msys-"</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wstring</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="sa">L</span><span class="s">"cygwin-"</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wstring</span><span class="o">::</span><span class="n">npos</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">||</span><span class="w"> </span><span class="n">name</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="sa">L</span><span class="s">"-pty"</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">wstring</span><span class="o">::</span><span class="n">npos</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#endif</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="cp">#endif</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">    </span><span class="nf">isTerminal</span><span class="p">(</span><span class="w"> </span><span class="n">streambuf</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#if defined(UTILS_OS_LINUX) || defined(UTILS_OS_OSX)</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cout</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">cout_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isatty</span><span class="p">(</span><span class="n">fileno</span><span class="p">(</span><span class="n">stdout</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cout_term</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cerr</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">clog</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">cerr_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isatty</span><span class="p">(</span><span class="n">fileno</span><span class="p">(</span><span class="n">stderr</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cerr_term</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#elif defined(UTILS_OS_WINDOWS)</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cout</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">cout_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">_isatty</span><span class="p">(</span><span class="n">_fileno</span><span class="p">(</span><span class="n">stdout</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">isMsysPty</span><span class="p">(</span><span class="n">_fileno</span><span class="p">(</span><span class="n">stdout</span><span class="p">)));</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cout_term</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cerr</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">clog</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">cerr_term</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">_isatty</span><span class="p">(</span><span class="n">_fileno</span><span class="p">(</span><span class="n">stderr</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">isMsysPty</span><span class="p">(</span><span class="n">_fileno</span><span class="p">(</span><span class="n">stderr</span><span class="p">)));</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cerr_term</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#endif</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="cp">#ifdef UTILS_OS_WINDOWS</span>
+
+<span class="w">    </span><span class="k">struct</span> <span class="nc">SGR</span><span class="w"> </span><span class="p">{</span><span class="w">         </span><span class="c1">// Select Graphic Rendition parameters for Windows console</span>
+<span class="w">      </span><span class="n">BYTE</span><span class="w">    </span><span class="n">fgColor</span><span class="p">;</span><span class="w">   </span><span class="c1">// foreground color (0-15) lower 3 rgb bits + intense bit</span>
+<span class="w">      </span><span class="n">BYTE</span><span class="w">    </span><span class="n">bgColor</span><span class="p">;</span><span class="w">   </span><span class="c1">// background color (0-15) lower 3 rgb bits + intense bit</span>
+<span class="w">      </span><span class="n">BYTE</span><span class="w">    </span><span class="n">bold</span><span class="p">;</span><span class="w">      </span><span class="c1">// emulated as FOREGROUND_INTENSITY bit</span>
+<span class="w">      </span><span class="n">BYTE</span><span class="w">    </span><span class="n">underline</span><span class="p">;</span><span class="w"> </span><span class="c1">// emulated as BACKGROUND_INTENSITY bit</span>
+<span class="w">      </span><span class="n">BOOLEAN</span><span class="w"> </span><span class="n">inverse</span><span class="p">;</span><span class="w">   </span><span class="c1">// swap foreground/bold &amp; background/underline</span>
+<span class="w">      </span><span class="n">BOOLEAN</span><span class="w"> </span><span class="n">conceal</span><span class="p">;</span><span class="w">   </span><span class="c1">// set foreground/bold to background/underline</span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">enum</span> <span class="k">class</span><span class="w"> </span><span class="nc">AttrColor</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">BYTE</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// Color attributes for console screen buffer</span>
+<span class="w">      </span><span class="n">black</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">red</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">green</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">yellow</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">blue</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">magenta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">cyan</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">gray</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">HANDLE</span><span class="w"></span>
+<span class="w">    </span><span class="nf">getConsoleHandle</span><span class="p">(</span><span class="w"> </span><span class="n">streambuf</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cout</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">hStdout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetStdHandle</span><span class="p">(</span><span class="n">STD_OUTPUT_HANDLE</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">hStdout</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cerr</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">clog</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">hStderr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetStdHandle</span><span class="p">(</span><span class="n">STD_ERROR_HANDLE</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">hStderr</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">INVALID_HANDLE_VALUE</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">    </span><span class="nf">setWinTermAnsiColors</span><span class="p">(</span><span class="w"> </span><span class="n">streambuf</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="n">osbuf</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">HANDLE</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getConsoleHandle</span><span class="p">(</span><span class="n">osbuf</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_HANDLE_VALUE</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">DWORD</span><span class="w"> </span><span class="n">dwMode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">GetConsoleMode</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">dwMode</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">dwMode</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">ENABLE_VIRTUAL_TERMINAL_PROCESSING</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">SetConsoleMode</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">dwMode</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">    </span><span class="nf">supportsAnsi</span><span class="p">(</span><span class="w"> </span><span class="n">streambuf</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cout</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">cout_ansi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">isMsysPty</span><span class="p">(</span><span class="n">_fileno</span><span class="p">(</span><span class="n">stdout</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">setWinTermAnsiColors</span><span class="p">(</span><span class="n">osbuf</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cout_ansi</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cerr</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">osbuf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">clog</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">cerr_ansi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">isMsysPty</span><span class="p">(</span><span class="n">_fileno</span><span class="p">(</span><span class="n">stderr</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">setWinTermAnsiColors</span><span class="p">(</span><span class="n">osbuf</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">cerr_ansi</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">SGR</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="n">defaultState</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="n">defaultSgr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">CONSOLE_SCREEN_BUFFER_INFO</span><span class="w"> </span><span class="n">info</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">WORD</span><span class="w"> </span><span class="n">attrib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FOREGROUND_RED</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">FOREGROUND_GREEN</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">FOREGROUND_BLUE</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">GetConsoleScreenBufferInfo</span><span class="p">(</span><span class="n">GetStdHandle</span><span class="p">(</span><span class="n">STD_OUTPUT_HANDLE</span><span class="p">),</span><span class="o">&amp;</span><span class="n">info</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"></span>
+<span class="w">             </span><span class="n">GetConsoleScreenBufferInfo</span><span class="p">(</span><span class="n">GetStdHandle</span><span class="p">(</span><span class="n">STD_ERROR_HANDLE</span><span class="p">),</span><span class="o">&amp;</span><span class="n">info</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="n">attrib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">info</span><span class="p">.</span><span class="n">wAttributes</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">SGR</span><span class="w"> </span><span class="n">sgr</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">FALSE</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+<span class="w">        </span><span class="n">sgr</span><span class="p">.</span><span class="n">fgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">attrib</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x0F</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">sgr</span><span class="p">.</span><span class="n">bgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">attrib</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xF0</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">sgr</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}();</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">defaultSgr</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">BYTE</span><span class="w"></span>
+<span class="w">    </span><span class="n">ansi2attr</span><span class="p">(</span><span class="w"> </span><span class="n">BYTE</span><span class="w"> </span><span class="n">rgb</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">AttrColor</span><span class="w"> </span><span class="n">rev</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">black</span><span class="p">,</span><span class="w">  </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">red</span><span class="p">,</span><span class="w">  </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">green</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">yellow</span><span class="p">,</span><span class="w"> </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">blue</span><span class="p">,</span><span class="w"> </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">magenta</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">cyan</span><span class="p">,</span><span class="w">   </span><span class="n">AttrColor</span><span class="o">::</span><span class="n">gray</span><span class="w"></span>
+<span class="w">      </span><span class="p">};</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">BYTE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rev</span><span class="p">[</span><span class="n">rgb</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setWinSGR</span><span class="p">(</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">bg</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">bg</span><span class="o">::</span><span class="n">reset</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">bgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ansi2attr</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">BYTE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">40</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">bgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">defaultState</span><span class="p">().</span><span class="n">bgColor</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setWinSGR</span><span class="p">(</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">fg</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">col</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">fg</span><span class="o">::</span><span class="n">reset</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">fgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ansi2attr</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">BYTE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">30</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">fgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">defaultState</span><span class="p">().</span><span class="n">fgColor</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setWinSGR</span><span class="p">(</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">bgB</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">state</span><span class="p">.</span><span class="n">bgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">BACKGROUND_INTENSITY</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ansi2attr</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">BYTE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setWinSGR</span><span class="p">(</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">fgB</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">state</span><span class="p">.</span><span class="n">fgColor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FOREGROUND_INTENSITY</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ansi2attr</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">BYTE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">90</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setWinSGR</span><span class="p">(</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">style</span><span class="w"> </span><span class="n">style</span><span class="p">,</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">style</span><span class="o">::</span><span class="nl">reset</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">defaultState</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">style</span><span class="o">::</span><span class="nl">bold</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">bold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FOREGROUND_INTENSITY</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">style</span><span class="o">::</span><span class="nl">underline</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">style</span><span class="o">::</span><span class="nl">blink</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">underline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BACKGROUND_INTENSITY</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">style</span><span class="o">::</span><span class="nl">reversed</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">inverse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TRUE</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">rang</span><span class="o">::</span><span class="n">style</span><span class="o">::</span><span class="nl">conceal</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="n">conceal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TRUE</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">default</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">SGR</span><span class="w"> </span><span class="o">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="n">current_state</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">defaultState</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">state</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">WORD</span><span class="w"></span>
+<span class="w">    </span><span class="n">SGR2Attr</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SGR</span><span class="w"> </span><span class="o">&amp;</span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">WORD</span><span class="w"> </span><span class="n">attrib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">conceal</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">inverse</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="n">attrib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="n">fgColor</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">fgColor</span><span class="p">;</span><span class="w"></span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">bold</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">attrib</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">FOREGROUND_INTENSITY</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BACKGROUND_INTENSITY</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="n">attrib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="n">bgColor</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">bgColor</span><span class="p">;</span><span class="w"></span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">underline</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">attrib</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">FOREGROUND_INTENSITY</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">BACKGROUND_INTENSITY</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">inverse</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">attrib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="n">fgColor</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">bgColor</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">bold</span><span class="w">      </span><span class="p">)</span><span class="w"> </span><span class="n">attrib</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">BACKGROUND_INTENSITY</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">underline</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">attrib</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">FOREGROUND_INTENSITY</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">attrib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">fgColor</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="n">bgColor</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">bold</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="n">underline</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">attrib</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">inline</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setWinColorNative_tmpl</span><span class="p">(</span><span class="w"> </span><span class="n">ostream</span><span class="w"> </span><span class="o">&amp;</span><span class="n">os</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">HANDLE</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getConsoleHandle</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">rdbuf</span><span class="p">());</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">INVALID_HANDLE_VALUE</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">setWinSGR</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">current_state</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Out all buffered text to console with previous settings:</span>
+<span class="w">        </span><span class="n">os</span><span class="p">.</span><span class="n">flush</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">SetConsoleTextAttribute</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">SGR2Attr</span><span class="p">(</span><span class="n">current_state</span><span class="p">()));</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="cp">#define DO_INSTANTIATION(A)                 \</span>
+<span class="cp">    void                                        \</span>
+<span class="cp">    setWinColorNative( ostream &amp;os, A value ) { \</span>
+<span class="cp">      setWinColorNative_tmpl&lt;A&gt;( os, value );   \</span>
+<span class="cp">    }</span>
+
+<span class="w">    </span><span class="n">DO_INSTANTIATION</span><span class="p">(</span><span class="w"> </span><span class="k">enum</span> <span class="nc">rang</span><span class="o">::</span><span class="n">style</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">DO_INSTANTIATION</span><span class="p">(</span><span class="w"> </span><span class="k">enum</span> <span class="nc">rang</span><span class="o">::</span><span class="n">bg</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">DO_INSTANTIATION</span><span class="p">(</span><span class="w"> </span><span class="k">enum</span> <span class="nc">rang</span><span class="o">::</span><span class="n">fg</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">DO_INSTANTIATION</span><span class="p">(</span><span class="w"> </span><span class="k">enum</span> <span class="nc">rang</span><span class="o">::</span><span class="n">bgB</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">DO_INSTANTIATION</span><span class="p">(</span><span class="w"> </span><span class="k">enum</span> <span class="nc">rang</span><span class="o">::</span><span class="n">fgB</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="cp">#endif</span>
+<span class="w">  </span><span class="p">}</span><span class="w">  </span><span class="c1">// namespace rang_implementation</span>
+
+<span class="p">}</span><span class="w">  </span><span class="c1">// namespace rang</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/dc48Ky8di.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+<div class="sphinx-toc sphinxglobaltoc">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rang.html">rang - Colors for your Terminal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zstr.html">Zstr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root.html">C++ API</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             >toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File rang.cc</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Enrico Bertolazzi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

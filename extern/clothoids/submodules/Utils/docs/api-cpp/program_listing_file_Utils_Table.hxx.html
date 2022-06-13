@@ -1,0 +1,478 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File Table.hxx &#8212; Utils v1.2
+</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/cloud.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/table_styling.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+    <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C">toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File Table.hxx</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-table-hxx">
+<span id="program-listing-file-utils-table-hxx"></span><h1>Program Listing for File Table.hxx<a class="headerlink" href="#program-listing-for-file-table-hxx" title="Permalink to this headline">¶</a>
+</h1>
+<p>↰ <a class="reference internal" href="file_Utils_Table.hxx.html#file-utils-table-hxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Utils/Table.hxx</span></code>)</p>
+<div class="highlight-cpp notranslate">
+<div class="highlight"><pre><span></span><span class="cm">/*--------------------------------------------------------------------------*\</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |  Copyright (C) 2021                                                      |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |         , __                 , __                                        |</span>
+<span class="cm"> |        /|/  \               /|/  \                                       |</span>
+<span class="cm"> |         | __/ _   ,_         | __/ _   ,_                                |</span>
+<span class="cm"> |         |   \|/  /  |  |   | |   \|/  /  |  |   |                        |</span>
+<span class="cm"> |         |(__/|__/   |_/ \_/|/|(__/|__/   |_/ \_/|/                       |</span>
+<span class="cm"> |                           /|                   /|                        |</span>
+<span class="cm"> |                           \|                   \|                        |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |      Enrico Bertolazzi                                                   |</span>
+<span class="cm"> |      Dipartimento di Ingegneria Industriale                              |</span>
+<span class="cm"> |      Universita` degli Studi di Trento                                   |</span>
+<span class="cm"> |      email: enrico.bertolazzi@unitn.it                                   |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm">\*--------------------------------------------------------------------------*/</span><span class="w"></span>
+
+
+<span class="cm">/*\</span>
+
+<span class="cm">  Based on terminal-table:</span>
+
+<span class="cm">  https://github.com/Bornageek/terminal-table</span>
+
+<span class="cm">  Copyright 2015 Andreas Wilhelm</span>
+
+<span class="cm">  Licensed under the Apache License, Version 2.0 (the "License");</span>
+<span class="cm">  you may not use this file except in compliance with the License.</span>
+<span class="cm">  You may obtain a copy of the License at</span>
+
+<span class="cm">      http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="cm">  Unless required by applicable law or agreed to in writing, software</span>
+<span class="cm">  distributed under the License is distributed on an "AS IS" BASIS,</span>
+<span class="cm">  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="cm">  See the License for the specific language governing permissions and</span>
+<span class="cm">  limitations under the License.</span>
+
+<span class="cm">\*/</span><span class="w"></span>
+
+<span class="cp">#pragma once</span>
+
+<span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="cp">#ifndef UTILS_TABLE_dot_HXX</span>
+<span class="cp">#define UTILS_TABLE_dot_HXX</span>
+<span class="cp">#endif</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Utils</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">namespace</span><span class="w"> </span><span class="nn">Table</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">class</span> <span class="nc">Table</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">integer</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">enum</span> <span class="nc">Alignment</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">LEFT</span><span class="p">,</span><span class="w"> </span><span class="n">RIGHT</span><span class="p">,</span><span class="w"> </span><span class="n">CENTER</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">class</span> <span class="nc">Style</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderTop</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="sc">'-'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderTopMid</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderTopLeft</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderTopRight</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderBottom</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="sc">'-'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderBottomMid</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderBottomLeft</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderBottomRight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderLeft</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="sc">'|'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderLeftMid</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderMid</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="sc">'-'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderMidMid</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderRight</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="sc">'|'</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderRightMid</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="sc">'+'</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">m_BorderMiddle</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="sc">'|'</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">m_PaddingLeft</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">m_PaddingRight</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Alignment</span><span class="w"> </span><span class="n">m_Align</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Alignment</span><span class="o">::</span><span class="n">LEFT</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">m_Width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Style</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderTop</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderTop</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderTop</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderTop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderTopMid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderTopMid</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderTopMid</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderTopMid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderTopLeft</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderTopLeft</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderTopLeft</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderTopLeft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderTopRight</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderTopRight</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderTopRight</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderTopRight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderBottom</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderBottom</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderBottom</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderBottom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderBottomMid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderBottomMid</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderBottomMid</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderBottomMid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderBottomLeft</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderBottomLeft</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderBottomLeft</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderBottomLeft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderBottomRight</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderBottomRight</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderBottomRight</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderBottomRight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderLeft</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderLeft</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderLeft</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderLeft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderLeftMid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderLeftMid</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderLeftMid</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderLeftMid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderMid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderMid</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderMid</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderMid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderMidMid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderMidMid</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderMidMid</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderMidMid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderRight</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderRight</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderRight</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderRight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderRightMid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderRightMid</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderRightMid</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderRightMid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">char</span><span class="w"> </span><span class="n">borderMiddle</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_BorderMiddle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">borderMiddle</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">borderStyle</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_BorderMiddle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">borderStyle</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">paddingLeft</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_PaddingLeft</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">paddingLeft</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">padding</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_PaddingLeft</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">padding</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">paddingRight</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_PaddingRight</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">paddingRight</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">padding</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_PaddingRight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">padding</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Alignment</span><span class="w"> </span><span class="n">alignment</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Align</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">alignment</span><span class="p">(</span><span class="w"> </span><span class="n">Alignment</span><span class="w"> </span><span class="n">align</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_Align</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">align</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">width</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Width</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">width</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_Width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">class</span> <span class="nc">Cell</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="n">Table</span><span class="w"> </span><span class="o">*</span><span class="w">   </span><span class="n">m_Table</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">string</span><span class="w">    </span><span class="n">m_Value</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">Alignment</span><span class="w"> </span><span class="n">m_Align</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">Alignment</span><span class="o">::</span><span class="n">LEFT</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w">   </span><span class="n">m_ColSpan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w">   </span><span class="n">m_Width</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Cell</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Cell</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">Table</span><span class="o">*</span><span class="w">         </span><span class="n">table</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">string</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">integer</span><span class="w">        </span><span class="n">colSpan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">string</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Value</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_Value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">val</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Alignment</span><span class="w"> </span><span class="n">alignment</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Align</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">alignment</span><span class="p">(</span><span class="w"> </span><span class="n">Alignment</span><span class="w"> </span><span class="n">align</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_Align</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">align</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">colSpan</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_ColSpan</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">colSpan</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">colSpan</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_ColSpan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colSpan</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">width</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">height</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">maxLineWidth</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">string</span><span class="w"> </span><span class="nf">line</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="nf">trimLine</span><span class="p">(</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">string</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">line</span><span class="p">,</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">class</span> <span class="nc">Row</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">protected</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Cell</span><span class="o">&gt;</span><span class="w">             </span><span class="n">vecCell</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vecstr</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Table</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m_Table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">vecCell</span><span class="w"> </span><span class="n">m_Cells</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Row</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Row</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">Table</span><span class="w"> </span><span class="o">*</span><span class="w">        </span><span class="n">table</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">vecstr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">cells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vecstr</span><span class="p">()</span><span class="w"></span>
+<span class="w">      </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Table</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">table</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Table</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">//vecCell &amp; cells() { return m_Cells; }</span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">cells</span><span class="p">(</span><span class="w"> </span><span class="n">vecstr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">cells</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">numCells</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">integer</span><span class="p">(</span><span class="n">m_Cells</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">cellWidth</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="nf">cellColSpan</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">span</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="nf">cell</span><span class="p">(</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="c1">//Cell&amp; cell( integer idx ) { return m_Cells[idx]; }</span>
+
+<span class="w">      </span><span class="n">Cell</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Cells</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">Cell</span><span class="w">       </span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Cells</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="n">height</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">string</span><span class="w"> </span><span class="nf">render</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">class</span> <span class="nc">Table</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Row</span><span class="o">&gt;</span><span class="w">    </span><span class="n">vecRow</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Cell</span><span class="o">&gt;</span><span class="w">   </span><span class="n">vecCell</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vecstr</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">vecstr</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vecvecstr</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">integer</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">      </span><span class="n">Style</span><span class="w">  </span><span class="n">m_Style</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">string</span><span class="w"> </span><span class="n">m_Title</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">Row</span><span class="w">    </span><span class="n">m_Headings</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">vecRow</span><span class="w"> </span><span class="n">m_Rows</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Table</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Table</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">Style</span><span class="w">     </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">style</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">vecvecstr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vecvecstr</span><span class="p">()</span><span class="w"></span>
+<span class="w">      </span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">m_Style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">rows</span><span class="p">(</span><span class="n">rows</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">void</span><span class="w"></span>
+<span class="w">      </span><span class="n">setup</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="n">Style</span><span class="w">     </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">style</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="n">vecvecstr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vecvecstr</span><span class="p">()</span><span class="w"></span>
+<span class="w">      </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_Style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">style</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">rows</span><span class="p">(</span><span class="n">rows</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">alignColumn</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">Alignment</span><span class="w"> </span><span class="n">align</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="nf">addRow</span><span class="p">(</span><span class="w"> </span><span class="n">vecstr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">cellSpacing</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">cellPadding</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">vecCell</span><span class="w"> </span><span class="nf">column</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">columnWidth</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">integer</span><span class="w"> </span><span class="nf">numColumns</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Style</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">style</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Style</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">style</span><span class="p">(</span><span class="w"> </span><span class="n">Style</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">style</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_Style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">style</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">string</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">title</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Title</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">title</span><span class="p">(</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_Title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">title</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Row</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">headings</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Headings</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">headings</span><span class="p">(</span><span class="w"> </span><span class="n">vecstr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">headings</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Row</span><span class="w">       </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">row</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">Row</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">row</span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Row</span><span class="w">       </span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">row</span><span class="p">(</span><span class="n">n</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">Row</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">row</span><span class="p">(</span><span class="n">n</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">Cell</span><span class="w">       </span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">)[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">Cell</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">integer</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">)[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">];</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">vecRow</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">rows</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_Rows</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">rows</span><span class="p">(</span><span class="w"> </span><span class="n">vecvecstr</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">rows</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">string</span><span class="w"></span>
+<span class="w">      </span><span class="nf">renderSeparator</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">left</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">mid</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">right</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">sep</span><span class="w"></span>
+<span class="w">      </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">string</span><span class="w"> </span><span class="nf">render</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kr">inline</span><span class="w"></span>
+<span class="n">Utils</span><span class="o">::</span><span class="n">ostream_type</span><span class="o">&amp;</span><span class="w"></span>
+<span class="k">operator</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">Utils</span><span class="o">::</span><span class="n">ostream_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">Utils</span><span class="o">::</span><span class="n">Table</span><span class="o">::</span><span class="n">Row</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">row</span><span class="p">.</span><span class="n">render</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kr">inline</span><span class="w"></span>
+<span class="n">Utils</span><span class="o">::</span><span class="n">ostream_type</span><span class="o">&amp;</span><span class="w"></span>
+<span class="k">operator</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">Utils</span><span class="o">::</span><span class="n">ostream_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">Utils</span><span class="o">::</span><span class="n">Table</span><span class="o">::</span><span class="n">Table</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">table</span><span class="p">.</span><span class="n">render</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/dc48Ky8di.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+<div class="sphinx-toc sphinxglobaltoc">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rang.html">rang - Colors for your Terminal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zstr.html">Zstr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root.html">C++ API</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             >toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File Table.hxx</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Enrico Bertolazzi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

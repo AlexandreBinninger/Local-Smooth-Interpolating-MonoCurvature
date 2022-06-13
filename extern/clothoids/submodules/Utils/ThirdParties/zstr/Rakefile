@@ -1,0 +1,55 @@
+require "rake"
+require "fileutils"
+
+require_relative "../../Rakefile_common.rb"
+
+desc "install ZSTR"
+task :install do
+  puts "Copy ZSTR source".yellow
+  if not Dir.exist?("zstr-master") then
+    extract_zip("zstr-master.zip");
+  end
+  FileUtils.rm_f    '../../src/Utils/zstr'
+  FileUtils.mkdir_p '../../src/Utils/zstr'
+  # copy file
+  [ "strict_fstream.hpp", "zstr_make_unique_polyfill.h" ].each do |fname|
+    FileUtils.cp 'zstr-master/src/'+fname, '../../src/Utils/zstr/'+fname
+  end
+  # filter file
+  wb = "// Workaround for UTILS (begin)\n"
+  we = "\n// Workaround for UTILS (end)"
+  File.open('../../src/Utils/zstr/zstr.hpp', 'w') do |out|
+    File.open('zstr-master/src/zstr.hpp', 'r').each do |line|
+      line.gsub!(
+        '#include <strict_fstream.hpp>',
+        wb+'#include "strict_fstream.hpp"'+we
+      );
+      line.gsub!(
+        '#include <zstr_make_unique_polyfill.h>',
+        wb+'#include "zstr_make_unique_polyfill.h"'+we
+      );
+      line.gsub!(
+        '#include <zlib.h>',
+        wb+
+        '#ifdef UTILS_OS_WINDOWS'+"\n"+
+        '  #include "../zlib-ng/zlib.h"'+"\n"+
+        '#else'+"\n"+
+        '  #include <zlib.h>'+"\n"+
+        '#endif'+we
+      );
+      line.gsub!('virtual ~ifstream()','~ifstream() override');
+      line.gsub!('virtual ~ofstream()','~ofstream() override');
+      line.gsub!('virtual ~ifstreambuf()','~ifstreambuf() override');
+      line.gsub!('virtual ~ofstreambuf()','~ofstreambuf() override');
+      out.puts line
+    end
+  end
+end
+
+task :install_osx   => :install
+task :install_linux => :install
+task :install_win   => :install
+task :clean
+task :clean_osx
+task :clean_linux
+task :clean_win

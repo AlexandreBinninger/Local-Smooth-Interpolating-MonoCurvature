@@ -1,0 +1,650 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File ThreadPool.hxx &#8212; Utils v1.2
+</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/cloud.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/table_styling.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+    <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C">toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File ThreadPool.hxx</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-threadpool-hxx">
+<span id="program-listing-file-utils-threadpool-hxx"></span><h1>Program Listing for File ThreadPool.hxx<a class="headerlink" href="#program-listing-for-file-threadpool-hxx" title="Permalink to this headline">¶</a>
+</h1>
+<p>↰ <a class="reference internal" href="file_Utils_ThreadPool.hxx.html#file-utils-threadpool-hxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Utils/ThreadPool.hxx</span></code>)</p>
+<div class="highlight-cpp notranslate">
+<div class="highlight"><pre><span></span><span class="cm">/*--------------------------------------------------------------------------*\</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |  Copyright (C) 2020                                                      |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |         , __                 , __                                        |</span>
+<span class="cm"> |        /|/  \               /|/  \                                       |</span>
+<span class="cm"> |         | __/ _   ,_         | __/ _   ,_                                |</span>
+<span class="cm"> |         |   \|/  /  |  |   | |   \|/  /  |  |   |                        |</span>
+<span class="cm"> |         |(__/|__/   |_/ \_/|/|(__/|__/   |_/ \_/|/                       |</span>
+<span class="cm"> |                           /|                   /|                        |</span>
+<span class="cm"> |                           \|                   \|                        |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |      Enrico Bertolazzi                                                   |</span>
+<span class="cm"> |      Dipartimento di Ingegneria Industriale                              |</span>
+<span class="cm"> |      Universita` degli Studi di Trento                                   |</span>
+<span class="cm"> |      email: enrico.bertolazzi@unitn.it                                   |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm">\*--------------------------------------------------------------------------*/</span><span class="w"></span>
+
+
+<span class="cp">#pragma once</span>
+
+<span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="cp">#ifndef UTILS_THREADPOOL_dot_HH</span>
+<span class="cp">#define UTILS_THREADPOOL_dot_HH</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;utility&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+<span class="c1">//#include &lt;type_traits&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;condition_variable&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;functional&gt;</span><span class="cp"></span>
+
+<span class="cp">#ifdef UTILS_OS_LINUX</span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pthread.h&gt;</span><span class="cp"></span>
+<span class="cp">#endif</span>
+
+<span class="cp">#ifdef max</span>
+<span class="w">  </span><span class="cp">#undef max</span>
+<span class="cp">#endif</span>
+<span class="cp">#ifdef min</span>
+<span class="w">  </span><span class="cp">#undef min</span>
+<span class="cp">#endif</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Utils</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">condition_variable</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_acquire</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_release</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#endif</span>
+
+<span class="w">  </span><span class="cm">/*\</span>
+<span class="cm">   |   _____ _                        _</span>
+<span class="cm">   |  |_   _| |__  _ __ ___  __ _  __| |___</span>
+<span class="cm">   |    | | | '_ \| '__/ _ \/ _` |/ _` / __|</span>
+<span class="cm">   |    | | | | | | | |  __/ (_| | (_| \__ \</span>
+<span class="cm">   |    |_| |_| |_|_|  \___|\__,_|\__,_|___/</span>
+<span class="cm">  \*/</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">class</span> <span class="nc">SpinLock</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// see https://geidav.wordpress.com/2016/03/23/test-and-set-spinlocks/</span>
+<span class="w">  </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_locked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="nb">false</span><span class="p">};</span><span class="w"></span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">SpinLock</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">m_locked</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">memory_order_relaxed</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">lock</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">do</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">m_locked</span><span class="p">.</span><span class="n">exchange</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">memory_order_acquire</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">unlock</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_locked</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="n">memory_order_release</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="w">  </span><span class="k">class</span> <span class="nc">WaitWorker</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#ifdef UTILS_OS_WINDOWS</span>
+<span class="w">    </span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">n_worker</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#else</span>
+<span class="w">    </span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">n_worker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#endif</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#ifdef UTILS_OS_WINDOWS</span>
+<span class="w">    </span><span class="n">WaitWorker</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">n_worker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#else</span>
+<span class="w">    </span><span class="n">WaitWorker</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#endif</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">n_worker</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">memory_order_relaxed</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">enter</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">++</span><span class="n">n_worker</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">leave</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">--</span><span class="n">n_worker</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">DATA</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="k">class</span> <span class="nc">BinarySearch</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="k">typedef</span><span class="w"> </span><span class="n">pair</span><span class="o">&lt;</span><span class="kr">thread</span><span class="o">::</span><span class="n">id</span><span class="p">,</span><span class="n">DATA</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">DATA_TYPE</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">mutable</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">DATA_TYPE</span><span class="o">&gt;</span><span class="w">      </span><span class="n">m_data</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">mutable</span><span class="w"> </span><span class="n">SpinLock</span><span class="w">               </span><span class="n">m_spin_write</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">mutable</span><span class="w"> </span><span class="n">WaitWorker</span><span class="w">             </span><span class="n">m_worker_read</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">BinarySearch</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_data</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_data</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="o">~</span><span class="n">BinarySearch</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nl">a</span> <span class="p">:</span><span class="w"> </span><span class="n">m_data</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_data</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">clear</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nl">a</span> <span class="p">:</span><span class="w"> </span><span class="n">m_data</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">delete</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_data</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w"> </span><span class="n">m_data</span><span class="p">.</span><span class="n">reserve</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">DATA</span><span class="w"> </span><span class="o">*</span><span class="w"></span>
+<span class="w">    </span><span class="n">search</span><span class="p">(</span><span class="w"> </span><span class="kr">thread</span><span class="o">::</span><span class="n">id</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ok</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="c1">// wait writing finished</span>
+<span class="w">      </span><span class="n">m_worker_read</span><span class="p">.</span><span class="n">enter</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">size_t</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_worker_read</span><span class="p">.</span><span class="n">leave</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_worker_read</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="c1">// wait all read finished</span>
+<span class="w">        </span><span class="n">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">U</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_data</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">DATA_TYPE</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">dL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="n">dL</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">DATA</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dL</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DATA</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">size_t</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">U</span><span class="o">-</span><span class="n">L</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kt">size_t</span><span class="w"> </span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">L</span><span class="o">+</span><span class="n">U</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="kr">thread</span><span class="o">::</span><span class="n">id</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">id_pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">[</span><span class="n">pos</span><span class="p">].</span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">id_pos</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">DATA_TYPE</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">dL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">[</span><span class="n">L</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">dL</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_worker_read</span><span class="p">.</span><span class="n">leave</span><span class="p">();</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">dL</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">DATA_TYPE</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">dU</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">[</span><span class="n">U</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">dU</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_worker_read</span><span class="p">.</span><span class="n">leave</span><span class="p">();</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">dU</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_worker_read</span><span class="p">.</span><span class="n">leave</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// not found must insert</span>
+<span class="w">      </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_worker_read</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="c1">// wait all read finished</span>
+<span class="w">      </span><span class="n">ok</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">dL</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">++</span><span class="n">L</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_data</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">U</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="o">--</span><span class="n">U</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_data</span><span class="p">[</span><span class="n">U</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">first</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">[</span><span class="n">U</span><span class="p">].</span><span class="n">first</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_data</span><span class="p">[</span><span class="n">U</span><span class="o">+</span><span class="mi">1</span><span class="p">].</span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">[</span><span class="n">U</span><span class="p">].</span><span class="n">second</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">DATA_TYPE</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">dL1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">[</span><span class="n">L</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="n">dL1</span><span class="p">.</span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">DATA</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dL1</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DATA</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_spin_write</span><span class="p">.</span><span class="n">unlock</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="w">  </span><span class="k">class</span> <span class="nc">SpinLock_barrier</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_count</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_generation</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w">         </span><span class="n">m_count_reset_value</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">SpinLock_barrier</span><span class="p">(</span><span class="w"> </span><span class="n">SpinLock_barrier</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">SpinLock_barrier</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="w"> </span><span class="n">SpinLock_barrier</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">explicit</span><span class="w"></span>
+<span class="w">    </span><span class="n">SpinLock_barrier</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">m_generation</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setup</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_count_reset_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">count_down</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">gen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_generation</span><span class="p">.</span><span class="n">load</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">--</span><span class="n">m_count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_generation</span><span class="p">.</span><span class="n">compare_exchange_weak</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span><span class="w"> </span><span class="n">gen</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">          </span><span class="n">m_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_count_reset_value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">gen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_generation</span><span class="p">.</span><span class="n">load</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">gen</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">m_generation</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">m_count</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">yield</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">count_down_and_wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">gen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_generation</span><span class="p">.</span><span class="n">load</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">--</span><span class="n">m_count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_generation</span><span class="p">.</span><span class="n">compare_exchange_weak</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span><span class="w"> </span><span class="n">gen</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">          </span><span class="n">m_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_count_reset_value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">((</span><span class="n">gen</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">m_generation</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">m_count</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">yield</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="w">  </span><span class="k">class</span> <span class="nc">Barrier</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                </span><span class="n">m_to_be_done</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w">                </span><span class="n">m_usedThread</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">mutex</span><span class="w">              </span><span class="n">m_mtx</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">condition_variable</span><span class="w"> </span><span class="n">m_cond</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">Barrier</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_to_be_done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">setup</span><span class="p">(</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">nthreads</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">m_usedThread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_to_be_done</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nthreads</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">count_down</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lck</span><span class="p">(</span><span class="n">m_mtx</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">--</span><span class="n">m_to_be_done</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_cond</span><span class="p">.</span><span class="n">notify_all</span><span class="p">()</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="c1">// wake up all tread</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lck</span><span class="p">(</span><span class="n">m_mtx</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_cond</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lck</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">count_down_and_wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lck</span><span class="p">(</span><span class="n">m_mtx</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">--</span><span class="n">m_to_be_done</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_cond</span><span class="p">.</span><span class="n">notify_all</span><span class="p">()</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="c1">// wake up all tread</span>
+<span class="w">        </span><span class="n">m_to_be_done</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_usedThread</span><span class="w"> </span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_cond</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lck</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="c1">// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span>
+
+<span class="w">  </span><span class="k">class</span> <span class="nc">SimpleSemaphore</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">               </span><span class="n">m_go</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">mutex</span><span class="w">              </span><span class="n">m_mutex</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">condition_variable</span><span class="w"> </span><span class="n">m_cv</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">SimpleSemaphore</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_go</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">green</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lock</span><span class="p">(</span><span class="n">m_mutex</span><span class="p">);</span><span class="w"> </span><span class="n">m_go</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_cv</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">red</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lock</span><span class="p">(</span><span class="n">m_mutex</span><span class="p">);</span><span class="w"> </span><span class="n">m_go</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_cv</span><span class="p">.</span><span class="n">notify_one</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">wait</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lock</span><span class="p">(</span><span class="n">m_mutex</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_cv</span><span class="p">.</span><span class="n">wait</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="k">this</span><span class="p">]()</span><span class="o">-&gt;</span><span class="kt">bool</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">m_go</span><span class="p">;</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="cm">/*\</span>
+<span class="cm">   |  __        __         _</span>
+<span class="cm">   |  \ \      / /__  _ __| | _____ _ __</span>
+<span class="cm">   |   \ \ /\ / / _ \| '__| |/ / _ \ '__|</span>
+<span class="cm">   |    \ V  V / (_) | |  |   &lt;  __/ |</span>
+<span class="cm">   |     \_/\_/ \___/|_|  |_|\_\___|_|</span>
+<span class="cm">  \*/</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">class</span> <span class="nc">Worker</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">friend</span><span class="w"> </span><span class="k">class</span> <span class="nc">ThreadPool</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w">             </span><span class="n">m_active</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">SimpleSemaphore</span><span class="w">  </span><span class="n">m_is_running</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">SimpleSemaphore</span><span class="w">  </span><span class="n">m_job_done</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kr">thread</span><span class="w">           </span><span class="n">m_running_thread</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_job</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">//disable copy</span>
+<span class="w">    </span><span class="n">Worker</span><span class="p">(</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">Worker</span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_active</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_is_running</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_active</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_job</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_is_running</span><span class="p">.</span><span class="n">red</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_job_done</span><span class="p">.</span><span class="n">green</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Worker</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_active</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">start</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="o">~</span><span class="n">Worker</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">stop</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">Worker</span><span class="p">(</span><span class="w"> </span><span class="n">Worker</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_active</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">m_active</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_job</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">m_job</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_running_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">move</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">m_running_thread</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">start</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">m_active</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_is_running</span><span class="p">.</span><span class="n">red</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_job_done</span><span class="p">.</span><span class="n">green</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_running_thread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">thread</span><span class="p">(</span><span class="w"> </span><span class="p">[</span><span class="k">this</span><span class="p">]</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">loop</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">stop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">m_active</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">m_active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w">        </span><span class="c1">// deactivate computation</span>
+<span class="w">        </span><span class="n">m_is_running</span><span class="p">.</span><span class="n">green</span><span class="p">();</span><span class="w">    </span><span class="c1">// for exiting from the loop</span>
+<span class="w">        </span><span class="n">m_running_thread</span><span class="p">.</span><span class="n">join</span><span class="p">();</span><span class="w"> </span><span class="c1">// wait thread for exiting</span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">wait</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_job_done</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">class</span> <span class="nc">Func</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="p">...</span><span class="w"> </span><span class="n">Args</span><span class="w"> </span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">run</span><span class="p">(</span><span class="w"> </span><span class="n">Func</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">Args</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="c1">//launch( bind(forward&lt;Func&gt;(func), forward&lt;Args&gt;(args)...) );</span>
+<span class="w">      </span><span class="n">m_job_done</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="c1">// se gia occupato in task aspetta</span>
+<span class="w">      </span><span class="n">m_job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bind</span><span class="p">(</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Func</span><span class="o">&gt;</span><span class="p">(</span><span class="n">func</span><span class="p">),</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)...);</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_job_done</span><span class="p">.</span><span class="n">red</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_is_running</span><span class="p">.</span><span class="n">green</span><span class="p">();</span><span class="w"> </span><span class="c1">// activate computation</span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="cm">/*\</span>
+<span class="cm">   |   _____ _                        _ ____             _</span>
+<span class="cm">   |  |_   _| |__  _ __ ___  __ _  __| |  _ \ ___   ___ | |</span>
+<span class="cm">   |    | | | '_ \| '__/ _ \/ _` |/ _` | |_) / _ \ / _ \| |</span>
+<span class="cm">   |    | | | | | | | |  __/ (_| | (_| |  __/ (_) | (_) | |</span>
+<span class="cm">   |    |_| |_| |_|_|  \___|\__,_|\__,_|_|   \___/ \___/|_|</span>
+<span class="cm">  \*/</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">class</span> <span class="nc">ThreadPool</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// need to keep track of threads so we can join them</span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Worker</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_workers</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">//disable copy</span>
+<span class="w">    </span><span class="n">ThreadPool</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ThreadPool</span><span class="p">(</span><span class="w"> </span><span class="n">ThreadPool</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">ThreadPool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ThreadPool</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">delete</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="cp">#if defined(UTILS_OS_WINDOWS)</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nl">w</span><span class="p">:</span><span class="w"> </span><span class="n">m_workers</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">start</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#elif defined(UTILS_OS_LINUX)</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">sched_param</span><span class="w"> </span><span class="n">sch</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">int</span><span class="w">         </span><span class="n">policy</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nl">w</span><span class="p">:</span><span class="w"> </span><span class="n">m_workers</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">w</span><span class="p">.</span><span class="n">start</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="kr">thread</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">m_running_thread</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_getschedparam</span><span class="p">(</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">native_handle</span><span class="p">(),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">policy</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sch</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">sch</span><span class="p">.</span><span class="n">sched_priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sched_get_priority_max</span><span class="p">(</span><span class="w"> </span><span class="n">SCHED_RR</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">pthread_setschedparam</span><span class="p">(</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">native_handle</span><span class="p">(),</span><span class="w"> </span><span class="n">SCHED_RR</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">sch</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#else</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nl">w</span><span class="p">:</span><span class="w"> </span><span class="n">m_workers</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">start</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="cp">#endif</span>
+
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">ThreadPool</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">nthread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span>
+<span class="w">        </span><span class="kt">unsigned</span><span class="p">(</span><span class="kr">thread</span><span class="o">::</span><span class="n">hardware_concurrency</span><span class="p">()</span><span class="mi">-1</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_workers</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="w"> </span><span class="kt">size_t</span><span class="p">(</span><span class="w"> </span><span class="n">nthread</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">setup</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Func</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="p">...</span><span class="w"> </span><span class="n">Args</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">run</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">nt</span><span class="p">,</span><span class="w"> </span><span class="n">Func</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">Args</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_workers</span><span class="p">[</span><span class="kt">size_t</span><span class="p">(</span><span class="n">nt</span><span class="p">)].</span><span class="n">run</span><span class="p">(</span><span class="w"> </span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">...);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">wait_all</span><span class="p">()</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nl">w</span> <span class="p">:</span><span class="w"> </span><span class="n">m_workers</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">start_all</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nl">w</span> <span class="p">:</span><span class="w"> </span><span class="n">m_workers</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">start</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">stop_all</span><span class="p">()</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nl">w</span> <span class="p">:</span><span class="w"> </span><span class="n">m_workers</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">w</span><span class="p">.</span><span class="n">stop</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kt">unsigned</span><span class="p">(</span><span class="n">m_workers</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kr">thread</span><span class="o">::</span><span class="n">id</span><span class="w"></span>
+<span class="w">    </span><span class="n">get_id</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_workers</span><span class="p">[</span><span class="kt">size_t</span><span class="p">(</span><span class="n">i</span><span class="p">)].</span><span class="n">m_running_thread</span><span class="p">.</span><span class="n">get_id</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kr">thread</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="n">get_thread</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_workers</span><span class="p">[</span><span class="kt">size_t</span><span class="p">(</span><span class="n">i</span><span class="p">)].</span><span class="n">m_running_thread</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kr">thread</span><span class="w"> </span><span class="o">&amp;</span><span class="w"></span>
+<span class="w">    </span><span class="n">get_thread</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_workers</span><span class="p">[</span><span class="kt">size_t</span><span class="p">(</span><span class="n">i</span><span class="p">)].</span><span class="n">m_running_thread</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="n">resize</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">numThreads</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">wait_all</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">stop_all</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="n">m_workers</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="w"> </span><span class="kt">size_t</span><span class="p">(</span><span class="n">numThreads</span><span class="p">)</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">setup</span><span class="p">();</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/dc48Ky8di.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+<div class="sphinx-toc sphinxglobaltoc">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rang.html">rang - Colors for your Terminal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zstr.html">Zstr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root.html">C++ API</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             >toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File ThreadPool.hxx</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Enrico Bertolazzi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

@@ -1,0 +1,116 @@
+require "rake"
+require_relative "../Rakefile_common.rb"
+
+case RUBY_PLATFORM
+when /darwin/
+  OS = :mac
+when /linux/
+  OS = :linux
+when /cygwin|mswin|mingw|bccwin|wince|emx/
+  OS = :win
+end
+
+task :default => :install
+
+task :install do
+  case OS
+  when :mac
+    Rake::Task[:install_osx].invoke()
+  when :linux
+    Rake::Task[:install_linux].invoke()
+  when :win
+    Rake::Task[:install_win].invoke()
+  end
+end
+
+desc "install 3rd parties for OSX"
+task :install_osx do
+  FileUtils.cd "Eigen"
+  sh "rake install_osx"
+  FileUtils.cd "../fmt"
+  sh "rake install_osx"
+  FileUtils.cd "../zstr"
+  sh "rake install_osx"
+  #FileUtils.cd "../zlib-ng"
+  #sh "rake install_osx"
+  #FileUtils.cd "../miniz"
+  #sh "rake install_osx"
+  FileUtils.cd ".."
+end
+
+desc "install 3rd parties for LINUX"
+task :install_linux do
+  FileUtils.cd "Eigen"
+  sh "rake install_linux"
+  FileUtils.cd "../fmt"
+  sh "rake install_linux"
+  FileUtils.cd "../zstr"
+  sh "rake install_linux"
+  #FileUtils.cd "../zlib-ng"
+  #sh "rake install_linux"
+  #FileUtils.cd "../miniz"
+  #sh "rake install_linux"
+  FileUtils.cd ".."
+end
+
+desc "install 3rd parties for WINDOWS"
+task :install_win do
+  FileUtils.cd "Eigen"
+  sh "rake install_win"
+  FileUtils.cd "../fmt"
+  sh "rake install_win"
+  FileUtils.cd "../zstr"
+  sh "rake install_win"
+  #FileUtils.cd "../zlib-ng"
+  #sh "rake install_win"
+  #FileUtils.cd "../miniz"
+  #sh "rake install_win"
+  FileUtils.cd ".."
+  FileUtils.mkdir_p "../lib3rd/include"
+  FileUtils.mkdir_p "../lib3rd/lib"
+  FileUtils.mkdir_p "../lib3rd/dll"
+  FileUtils.mkdir_p "../src/Utils/zlib-ng"
+  FileUtils.cp "zlib-ng/include/zlib.h",      "../src/Utils/zlib-ng/zlib.h"
+  FileUtils.cp "zlib-ng/include/zconf.h",     "../src/Utils/zlib-ng/zconf.h"
+  FileUtils.cp "zlib-ng/include/zlib.h",      "../lib3rd/include"
+  FileUtils.cp "zlib-ng/include/zconf.h",     "../lib3rd/include"
+  FileUtils.cp "zlib-ng/bin/zlib1.dll",       "../lib3rd/dll"
+  FileUtils.cp "zlib-ng/bin/zlibd1.dll",      "../lib3rd/dll"
+  FileUtils.cp "zlib-ng/lib/zlib.lib",        "../lib3rd/lib"
+  FileUtils.cp "zlib-ng/lib/zlibd.lib",       "../lib3rd/lib"
+  FileUtils.cp "zlib-ng/lib/zlibstatic.lib",  "../lib3rd/lib"
+  FileUtils.cp "zlib-ng/lib/zlibstaticd.lib", "../lib3rd/lib"
+end
+
+desc "clean 3rd parties"
+task :clean do
+  case OS
+  when :mac
+    Rake::Task[:clean_osx].invoke
+  when :linux
+    Rake::Task[:clean_linux].invoke
+  when :win
+    Rake::Task[:clean_win].invoke
+  end
+end
+
+desc "clean 3rd parties for OSX"
+task :clean_osx do
+  FileUtils.cd "Eigen"
+  sh "rake clean_osx"
+  FileUtils.cd ".."
+end
+
+desc "clean 3rd parties for LINUX"
+task :clean_linux do
+  FileUtils.cd "Eigen"
+  sh "rake clean_linux"
+  FileUtils.cd ".."
+end
+
+desc "clean 3rd parties for WINDOWS"
+task :clean_win do
+  FileUtils.cd "Eigen"
+  sh "rake clean_win"
+  FileUtils.cd ".."
+end

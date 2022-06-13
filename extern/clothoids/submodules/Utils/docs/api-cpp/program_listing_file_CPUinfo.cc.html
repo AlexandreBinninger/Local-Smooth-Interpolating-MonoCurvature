@@ -1,0 +1,514 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File CPUinfo.cc &#8212; Utils v1.2
+</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/cloud.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/table_styling.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+    <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C">toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File CPUinfo.cc</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-cpuinfo-cc">
+<span id="program-listing-file-cpuinfo-cc"></span><h1>Program Listing for File CPUinfo.cc<a class="headerlink" href="#program-listing-for-file-cpuinfo-cc" title="Permalink to this headline">¶</a>
+</h1>
+<p>↰ <a class="reference internal" href="file_CPUinfo.cc.html#file-cpuinfo-cc"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">CPUinfo.cc</span></code>)</p>
+<div class="highlight-cpp notranslate">
+<div class="highlight"><pre><span></span><span class="cm">/*--------------------------------------------------------------------------*\</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |  Copyright (C) 2011                                                      |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |         , __                 , __                                        |</span>
+<span class="cm"> |        /|/  \               /|/  \                                       |</span>
+<span class="cm"> |         | __/ _   ,_         | __/ _   ,_                                |</span>
+<span class="cm"> |         |   \|/  /  |  |   | |   \|/  /  |  |   |                        |</span>
+<span class="cm"> |         |(__/|__/   |_/ \_/|/|(__/|__/   |_/ \_/|/                       |</span>
+<span class="cm"> |                           /|                   /|                        |</span>
+<span class="cm"> |                           \|                   \|                        |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |      Enrico Bertolazzi                                                   |</span>
+<span class="cm"> |      Dipartimento di Ingegneria Industriale                              |</span>
+<span class="cm"> |      Universita` degli Studi di Trento                                   |</span>
+<span class="cm"> |      email: enrico.bertolazzi@unitn.it                                   |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm">\*--------------------------------------------------------------------------*/</span><span class="w"></span>
+
+<span class="cm">/*</span>
+<span class="cm">SIMD class to detect presence of SIMD version 1.2.0</span>
+
+<span class="cm">Copyright (c) 2008 Wong Shao Voon</span>
+<span class="cm">1.1.0 - Contains the 3DNow, 3DNow+ and MMX+ detection bug fix by Leonardo Tazzini</span>
+<span class="cm">1.2.0 - Added AMD's SSE4a and SSE5</span>
+
+<span class="cm">The Code Project Open License (CPOL)</span>
+<span class="cm">http://www.codeproject.com/info/cpol10.aspx</span>
+<span class="cm">*/</span><span class="w"></span>
+
+<span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Utils.hh"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Utils_CPU_info.hh"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;map&gt;</span><span class="cp"></span>
+
+
+<span class="cp">#ifdef __ARM_ARCH</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Utils</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#endif</span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"></span>
+<span class="w">  </span><span class="nf">info</span><span class="p">(</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bMMX</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bMMXplus</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE2</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE3</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSSE3</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE41</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE42</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE4a</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE5</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_b3Dnow</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_b3DnowExt</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">m_bMMX</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bMMXplus</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE2</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE3</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSSE3</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE41</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE42</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE4a</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE5</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_b3Dnow</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_b3DnowExt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_MMX</span><span class="p">()</span><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_MMXplus</span><span class="p">()</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSE</span><span class="p">()</span><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSE2</span><span class="p">()</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSE3</span><span class="p">()</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSSE3</span><span class="p">()</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSE41</span><span class="p">()</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSE42</span><span class="p">()</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSE4a</span><span class="p">()</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_SSE5</span><span class="p">()</span><span class="w">     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_3Dnow</span><span class="p">()</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">has_3DnowExt</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">string</span><span class="w"></span>
+<span class="w">  </span><span class="nf">cpuInfo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">"ARM-unsupported"</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#else</span>
+
+<span class="cp">#define EDX_MMX_bit      0x800000UL   </span><span class="c1">// 23 bit</span>
+<span class="cp">#define EDX_SSE_bit      0x2000000UL  </span><span class="c1">// 25 bit</span>
+<span class="cp">#define EDX_SSE2_bit     0x4000000UL  </span><span class="c1">// 26 bit</span>
+<span class="cp">#define EDX_3DnowExt_bit 0x40000000UL </span><span class="c1">// 30 bit</span>
+<span class="cp">#define EDX_3Dnow_bit    0x80000000UL </span><span class="c1">// 31 bit</span>
+<span class="cp">#define EDX_MMXplus_bit  0x400000UL   </span><span class="c1">// 22 bit</span>
+
+<span class="cp">#define ECX_SSE3_bit     0x1UL        </span><span class="c1">//  0 bit</span>
+<span class="cp">#define ECX_SSSE3_bit    0x200UL      </span><span class="c1">//  9 bit</span>
+<span class="cp">#define ECX_SSE41_bit    0x80000UL    </span><span class="c1">// 19 bit</span>
+<span class="cp">#define ECX_SSE42_bit    0x100000UL   </span><span class="c1">// 20 bit</span>
+
+<span class="cp">#define ECX_SSE4A_bit    0x40UL       </span><span class="c1">//  6 bit</span>
+<span class="cp">#define ECX_SSE5_bit     0x800UL      </span><span class="c1">// 11 bit</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Utils</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#endif</span>
+
+<span class="w">  </span><span class="cp">#if defined(UTILS_OS_WINDOWS)</span>
+<span class="w">    </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;intrin.h&gt;</span><span class="cp"></span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="nf">cpuId</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kt">int</span><span class="w"> </span><span class="n">CPUInfo1</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="n">__cpuid</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo1</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfo1</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfo1</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfo1</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfo1</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#else</span>
+<span class="w">    </span><span class="cp">#if defined(__i386__) &amp;&amp; defined(__PIC__)</span>
+<span class="w">      </span><span class="cm">/* %ebx may be the PIC register.  */</span><span class="w"></span>
+<span class="w">      </span><span class="cp">#if __GNUC__ &gt;= 3</span>
+<span class="w">        </span><span class="cp">#define __cpuid(level, a, b, c, d)                        \</span>
+<span class="cp">          __asm__ ( "xchg{l}\t{%%}ebx, %1\n\t"                    \</span>
+<span class="cp">                    "cpuid\n\t"                                       \</span>
+<span class="cp">                    "xchg{l}\t{%%}ebx, %1\n\t"                    \</span>
+<span class="cp">                    : "=a" (a), "=r" (b), "=c" (c), "=d" (d)    \</span>
+<span class="cp">                    : "0" (level))</span>
+<span class="w">      </span><span class="cp">#else</span>
+<span class="w">        </span><span class="cm">/* Host GCCs older than 3.0 weren't supporting Intel asm syntax</span>
+<span class="cm">           nor alternatives in i386 code.  */</span><span class="w"></span>
+<span class="w">        </span><span class="cp">#define __cpuid(level, a, b, c, d)                        \</span>
+<span class="cp">          __asm__ ( "xchgl\t%%ebx, %1\n\t"                        \</span>
+<span class="cp">                    "cpuid\n\t"                                       \</span>
+<span class="cp">                    "xchgl\t%%ebx, %1\n\t"                        \</span>
+<span class="cp">                    : "=a" (a), "=r" (b), "=c" (c), "=d" (d)    \</span>
+<span class="cp">                    : "0" (level))</span>
+<span class="w">      </span><span class="cp">#endif</span>
+<span class="w">    </span><span class="cp">#else</span>
+<span class="w">      </span><span class="cp">#define __cpuid(level, a, b, c, d)                        \</span>
+<span class="cp">        __asm__ ( "cpuid\n\t"                                       \</span>
+<span class="cp">                  : "=a" (a), "=b" (b), "=c" (c), "=d" (d)  \</span>
+<span class="cp">                  : "0" (level))</span>
+<span class="w">    </span><span class="cp">#endif</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"></span>
+<span class="w">    </span><span class="nf">cpuId</span><span class="p">(</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">__cpuid</span><span class="p">(</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#endif</span>
+
+<span class="w">  </span><span class="k">static</span><span class="w"></span>
+<span class="w">  </span><span class="kt">void</span><span class="w"></span>
+<span class="w">  </span><span class="nf">info</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w">   </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w">   </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">ECX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">cpuId</span><span class="p">(</span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">cpuId</span><span class="p">(</span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">ECX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w"></span>
+<span class="w">      </span><span class="n">EDX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">cpuId</span><span class="p">(</span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="mh">0x80000000UL</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mh">0x80000001UL</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">cpuId</span><span class="p">(</span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="mh">0x80000001UL</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">void</span><span class="w"></span>
+<span class="w">  </span><span class="nf">info</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bMMX</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bMMXplus</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE2</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE3</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSSE3</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE41</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE42</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE4a</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_bSSE5</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_b3Dnow</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_b3DnowExt</span><span class="w"></span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">m_bMMX</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bMMXplus</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE2</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE3</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSSE3</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE41</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE42</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE4a</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_bSSE5</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_b3Dnow</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">m_b3DnowExt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">EDX_MMX_bit</span><span class="w">      </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="w">           </span><span class="p">)</span><span class="w"> </span><span class="n">m_bMMX</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">EDX_SSE_bit</span><span class="w">      </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="w">           </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSE</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">EDX_SSE2_bit</span><span class="w">     </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="w">           </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSE2</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ECX_SSE3_bit</span><span class="w">     </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="w">           </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSE3</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ECX_SSSE3_bit</span><span class="w">    </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="w">           </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSSE3</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ECX_SSE41_bit</span><span class="w">    </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="w">           </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSE41</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ECX_SSE42_bit</span><span class="w">    </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="w">           </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSE42</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">EDX_3DnowExt_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_b3DnowExt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">EDX_3Dnow_bit</span><span class="w">    </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_b3Dnow</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">EDX_MMXplus_bit</span><span class="w">  </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_bMMXplus</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ECX_SSE4A_bit</span><span class="w">    </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSE4a</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">ECX_SSE5_bit</span><span class="w">     </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">m_bSSE5</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_MMX</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">EDX_MMX_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_MMXplus</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">EDX_SSE_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSE</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">EDX_SSE_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSE2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">EDX_SSE2_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">EDX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSE3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ECX_SSE3_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSSE3</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ECX_SSSE3_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSE41</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ECX_SSE41_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSE42</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ECX_SSE42_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ECX</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSE4a</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ECX_SSE4A_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_SSE5</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ECX_SSE5_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_3Dnow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">EDX_3Dnow_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="kt">bool</span><span class="w"></span>
+<span class="w">  </span><span class="nf">has_3DnowExt</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">info</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">,</span><span class="w"> </span><span class="n">ECX</span><span class="p">,</span><span class="w"> </span><span class="n">EDX</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">EDX_3DnowExt_bit</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">CPUInfoExt</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">struct</span> <span class="nc">CPUVendorID</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ebx</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">edx</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ecx</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">string</span><span class="w"></span>
+<span class="w">    </span><span class="nf">toString</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*&gt;</span><span class="p">(</span><span class="k">this</span><span class="p">),</span><span class="w"> </span><span class="mi">12</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">};</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">string</span><span class="w"></span>
+<span class="w">  </span><span class="nf">cpuInfo</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">cpuId</span><span class="p">(</span><span class="w"> </span><span class="n">CPUInfo</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">CPUVendorID</span><span class="w"> </span><span class="n">vendorID</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorID</span><span class="p">.</span><span class="n">ebx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint32_t</span><span class="p">(</span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorID</span><span class="p">.</span><span class="n">edx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint32_t</span><span class="p">(</span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorID</span><span class="p">.</span><span class="n">ecx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint32_t</span><span class="p">(</span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vendorIdToName</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"GenuineIntel"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Intel"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"AuthenticAMD"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"AMD"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"CyrixInstead"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Cyrix"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"CentaurHauls"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Centaur"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"SiS SiS SiS "</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"SiS"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"NexGenDriven"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"NexGen"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"GenuineTMx86"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Transmeta"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"RiseRiseRise"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Rise"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"UMC UMC UMC "</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"UMC"</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vendorIdToName</span><span class="p">[</span><span class="s">"Geode by NSC"</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"National Semiconductor"</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">string</span><span class="w"> </span><span class="n">vendorIDString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vendorID</span><span class="p">.</span><span class="n">toString</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">map</span><span class="o">&lt;</span><span class="n">string</span><span class="p">,</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">iterator</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vendorIdToName</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">vendorIDString</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">string</span><span class="w"> </span><span class="n">vendorName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">vendorIdToName</span><span class="p">.</span><span class="n">end</span><span class="p">())</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s">"Unknown"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">it</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="s">"Max instruction ID: {} Vendor ID: {} Vendor name: {}"</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">CPUInfo</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">vendorIDString</span><span class="p">,</span><span class="w"> </span><span class="n">vendorName</span><span class="w"></span>
+<span class="w">    </span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#endif</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/dc48Ky8di.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+<div class="sphinx-toc sphinxglobaltoc">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rang.html">rang - Colors for your Terminal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zstr.html">Zstr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root.html">C++ API</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             >toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File CPUinfo.cc</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Enrico Bertolazzi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

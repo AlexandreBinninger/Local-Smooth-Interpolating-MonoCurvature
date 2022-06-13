@@ -1,0 +1,327 @@
+
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Program Listing for File Utils.hxx &#8212; Utils v1.2
+</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/cloud.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/table_styling.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/collapsible-lists/css/tree_view.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&amp;display=swap" type="text/css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+    <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+
+    
+    
+     
+        <script src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script src="../_static/cloud.js"></script>
+    
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             accesskey="C">toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File Utils.hxx</a></li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="program-listing-for-file-utils-hxx">
+<span id="program-listing-file-utils-utils-hxx"></span><h1>Program Listing for File Utils.hxx<a class="headerlink" href="#program-listing-for-file-utils-hxx" title="Permalink to this headline">¶</a>
+</h1>
+<p>↰ <a class="reference internal" href="file_Utils_Utils.hxx.html#file-utils-utils-hxx"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">Utils/Utils.hxx</span></code>)</p>
+<div class="highlight-cpp notranslate">
+<div class="highlight"><pre><span></span><span class="cm">/*--------------------------------------------------------------------------*\</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |  Copyright (C) 2017                                                      |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |         , __                 , __                                        |</span>
+<span class="cm"> |        /|/  \               /|/  \                                       |</span>
+<span class="cm"> |         | __/ _   ,_         | __/ _   ,_                                |</span>
+<span class="cm"> |         |   \|/  /  |  |   | |   \|/  /  |  |   |                        |</span>
+<span class="cm"> |         |(__/|__/   |_/ \_/|/|(__/|__/   |_/ \_/|/                       |</span>
+<span class="cm"> |                           /|                   /|                        |</span>
+<span class="cm"> |                           \|                   \|                        |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm"> |      Enrico Bertolazzi                                                   |</span>
+<span class="cm"> |      Dipartimento di Ingegneria Industriale                              |</span>
+<span class="cm"> |      Universita` degli Studi di Trento                                   |</span>
+<span class="cm"> |      email: enrico.bertolazzi@unitn.it                                   |</span>
+<span class="cm"> |                                                                          |</span>
+<span class="cm">\*--------------------------------------------------------------------------*/</span><span class="w"></span>
+
+
+<span class="cp">#pragma once</span>
+
+<span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="cp">#ifndef UTILS_dot_HXX</span>
+<span class="cp">#define UTILS_dot_HXX</span>
+<span class="cp">#endif</span>
+
+<span class="c1">// select computer architecture</span>
+<span class="cp">#if defined(__APPLE__) &amp;&amp; defined(__MACH__)</span>
+<span class="w">  </span><span class="c1">// osx architecture</span>
+<span class="w">  </span><span class="cp">#define UTILS_OS_OSX 1</span>
+<span class="w">  </span><span class="cp">#if defined(__i386__)</span>
+<span class="w">    </span><span class="cp">#define UTILS_ARCH32 1</span>
+<span class="w">  </span><span class="cp">#elif defined(__x86_64__)</span>
+<span class="w">    </span><span class="cp">#define UTILS_ARCH64 1</span>
+<span class="w">  </span><span class="cp">#endif</span>
+<span class="cp">#elif defined(__unix__)</span>
+<span class="w">  </span><span class="c1">// linux architecture</span>
+<span class="w">  </span><span class="cp">#define UTILS_OS_LINUX 1</span>
+<span class="w">  </span><span class="cp">#if defined(__i386__)</span>
+<span class="w">    </span><span class="cp">#define UTILS_ARCH32 1</span>
+<span class="w">  </span><span class="cp">#elif defined(__x86_64__)</span>
+<span class="w">    </span><span class="cp">#define UTILS_ARCH64 1</span>
+<span class="w">  </span><span class="cp">#endif</span>
+<span class="cp">#elif defined(_WIN32) || defined(WIN32) || defined(_WIN64) || defined(WIN64)</span>
+<span class="w">  </span><span class="c1">// windows architecture</span>
+<span class="w">  </span><span class="cp">#define UTILS_OS_WINDOWS 1</span>
+<span class="w">  </span><span class="cp">#if defined(_M_X64) || defined(_M_AMD64) || defined(_WIN64) || defined(WIN64)</span>
+<span class="w">    </span><span class="cp">#define UTILS_ARCH64 1</span>
+<span class="w">  </span><span class="cp">#else</span>
+<span class="w">    </span><span class="cp">#define UTILS_ARCH32 1</span>
+<span class="w">  </span><span class="cp">#endif</span>
+<span class="cp">#else</span>
+<span class="w">  </span><span class="cp">#error "unsupported OS!"</span>
+<span class="cp">#endif</span>
+
+<span class="c1">// check if compiler is C++11</span>
+<span class="cp">#if (defined(_MSC_VER) &amp;&amp;  _MSC_VER &gt;= 1800) || \</span>
+<span class="cp">    (defined(__cplusplus) &amp;&amp; __cplusplus &gt; 199711L)</span>
+<span class="cp">#else</span>
+<span class="w">  </span><span class="cp">#error "Lapack Wrapper must be compiled using C++ &gt;= C++11"</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#define UTILS_PURE_VIRTUAL = 0</span>
+<span class="cp">#ifndef UTILS_OS_WINDOWS</span>
+<span class="w">  </span><span class="cp">#define UTILS_OVERRIDE  override</span>
+<span class="w">  </span><span class="cp">#define UTILS_CONSTEXPR constexpr</span>
+<span class="cp">#else</span>
+<span class="w">  </span><span class="cp">#define UTILS_OVERRIDE</span>
+<span class="w">  </span><span class="cp">#define UTILS_CONSTEXPR</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"fmt/printf.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"fmt/chrono.h"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"fmt/ostream.h"</span><span class="cp"></span>
+<span class="cp">#endif</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iomanip&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdlib&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cmath&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdexcept&gt;</span><span class="cp"></span>
+
+<span class="c1">// disable mingw-std-threads for mingw on MATLAB</span>
+<span class="cp">#if (defined(MINGW) || defined(__MINGW32__)) &amp;&amp; !defined(MATLAB_MEX_FILE )</span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mingw-std-threads/mingw.future.h"</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mingw-std-threads/mingw.mutex.h"</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mingw-std-threads/mingw.invoke.h"</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mingw-std-threads/mingw.shared_mutex.h"</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mingw-std-threads/mingw.thread.h"</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"mingw-std-threads/mingw.condition_variable.h"</span><span class="cp"></span>
+<span class="cp">#else</span>
+<span class="w">  </span><span class="c1">//#include &lt;future&gt;</span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span><span class="cp"></span>
+<span class="w">  </span><span class="c1">//#include &lt;shared_mutex&gt;</span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;condition_variable&gt;</span><span class="cp"></span>
+<span class="w">  </span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span><span class="cp"></span>
+<span class="cp">#endif</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rang.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Trace.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Console.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Malloc.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Numbers.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"TicToc.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"ThreadPool.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Quaternion.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Table.hxx"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"Token.hxx"</span><span class="cp"></span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">Utils</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">  </span><span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#endif</span>
+
+<span class="w">  </span><span class="n">string</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T_int</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span> <span class="nc">T_real</span><span class="o">&gt;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">void</span><span class="w"></span>
+<span class="w">  </span><span class="n">searchInterval</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">T_int</span><span class="w">                </span><span class="n">npts</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">T_real</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">T_real</span><span class="w">             </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">T_int</span><span class="w">              </span><span class="o">&amp;</span><span class="w"> </span><span class="n">lastInterval</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                 </span><span class="n">closed</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                 </span><span class="n">can_extend</span><span class="w"></span>
+<span class="w">  </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="cp">#ifndef DOXYGEN_SHOULD_SKIP_THIS</span>
+<span class="w">  </span><span class="k">extern</span><span class="w"> </span><span class="k">template</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">searchInterval</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w">             </span><span class="n">npts</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">float</span><span class="w">             </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w">           </span><span class="o">&amp;</span><span class="w"> </span><span class="n">lastInterval</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                </span><span class="n">closed</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                </span><span class="n">can_extend</span><span class="w"></span>
+<span class="w">  </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">extern</span><span class="w"> </span><span class="k">template</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">searchInterval</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w">              </span><span class="n">npts</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">double</span><span class="w">             </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w">            </span><span class="o">&amp;</span><span class="w"> </span><span class="n">lastInterval</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                 </span><span class="n">closed</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                 </span><span class="n">can_extend</span><span class="w"></span>
+<span class="w">  </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">extern</span><span class="w"> </span><span class="k">template</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">searchInterval</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int64_t</span><span class="w">             </span><span class="n">npts</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">float</span><span class="w">             </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int64_t</span><span class="w">           </span><span class="o">&amp;</span><span class="w"> </span><span class="n">lastInterval</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                </span><span class="n">closed</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                </span><span class="n">can_extend</span><span class="w"></span>
+<span class="w">  </span><span class="p">);</span><span class="w"></span>
+
+<span class="w">  </span><span class="k">extern</span><span class="w"> </span><span class="k">template</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">searchInterval</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int64_t</span><span class="w">              </span><span class="n">npts</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">double</span><span class="w">             </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int64_t</span><span class="w">            </span><span class="o">&amp;</span><span class="w"> </span><span class="n">lastInterval</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                 </span><span class="n">closed</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="kt">bool</span><span class="w">                 </span><span class="n">can_extend</span><span class="w"></span>
+<span class="w">  </span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="cp">#endif</span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+</section>
+
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/dc48Ky8di.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+<div class="sphinx-toc sphinxglobaltoc">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../rang.html">rang - Colors for your Terminal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../zstr.html">Zstr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root.html">C++ API</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../index.html" title="Table Of Contents"
+             >toc</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Utils</a> &#187;</li>
+
+        <li class="nav-item nav-item-this"><a href="">Program Listing for File Utils.hxx</a></li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Enrico Bertolazzi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.2.0.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>
