@@ -9,11 +9,7 @@ This folder is composed of three subfolders:
 - [```./matlab```](./matlab): to print the clodhoid shell (matlab)
 - [```./extern```](./extern): the external libraries used by our method
 - [```./code-gui```](./code-gui): the code with an integrated GUI (C++)
-
-There are also three files:
-
-- 2 [videos](#video): contains a video explaining our method and a video explaining how to use the program.
-- The [proof](#proof) of the of property 3.1
+- *coming: a folder without GUI for easier integration into your own framework*
 
 ## matlab
 
@@ -98,13 +94,10 @@ Our code is based on a Model-View-Controller pattern. All the relevant code for 
 
 The data files `bird.txt`, `face.txt` and `guitar.txt` come from the paper "A Class of C2 interpolating splines." (Yuksel, 2020).
 
-## Video
+<!--## Video
 
 We provide two videos to exemplify our work:
 
 - [results demo](./1-results-demo.mp4) for showcasing our results.
 - [GUI demo](./2-GUI-demo.mp4) for showing how to interact with the program.
-
-## Proof
-
-The file [`supplemental_proof`](./supplemental_proof.pdf) contains the proof of proposition 3.1 and some interpretations related to it.
+-->
