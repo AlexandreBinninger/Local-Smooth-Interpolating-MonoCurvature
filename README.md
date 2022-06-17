@@ -1,6 +1,6 @@
-# Smooth Interpolating Curves with Local Control and Monotonous Alternating Curvature
+# Smooth Interpolating Curves with Local Control and Monotone Alternating Curvature
 
-This folder contains the code related to the paper "Smooth Interpolating Curves with Local Control and Monotonous Alternating Curvature" by [Alexandre Binninger](https://alexandrebinninger.github.io) and [Olga Sorkine-Hornung](https://igl.ethz.ch/people/sorkine/index.php). The supplemental material is also made available here.
+This folder contains the code related to the paper "Smooth Interpolating Curves with Local Control and Monotone Alternating Curvature" by [Alexandre Binninger](https://alexandrebinninger.github.io) and [Olga Sorkine-Hornung](https://igl.ethz.ch/people/sorkine/index.php). The supplemental material is also made available here.
 
 ## Structure
 
@@ -94,10 +94,9 @@ Our code is based on a Model-View-Controller pattern. All the relevant code for 
 
 The data files `bird.txt`, `face.txt` and `guitar.txt` come from the paper "A Class of C2 interpolating splines." (Yuksel, 2020).
 
-<!--## Video
+## Video
 
 We provide two videos to exemplify our work:
 
-- [results demo](./1-results-demo.mp4) for showcasing our results.
-- [GUI demo](./2-GUI-demo.mp4) for showing how to interact with the program.
--->
+- [results demo](https://youtu.be/whl3qaNOt3U) for showcasing our results.
+- [GUI demo](https://youtu.be/S8DWnmYHch0) for showing how to interact with the program.
